@@ -1,5 +1,8 @@
 from flask import render_template
-from app import app
+import sqlalchemy as sa
+from app import app, db
+
+from app.models import Driver, Event
 
 @app.route('/')
 @app.route('/index')
@@ -23,3 +26,14 @@ def my_index():
 @app.route('/about')
 def my_about():
     return render_template('about.html', title='About')
+
+@app.route('/driver/<driver_name>')
+def driver(driver_name):
+    driver = db.first_or_404(sa.select(Driver).where(Driver.driver_name == driver_name))
+
+    driver_info = {
+        'driver': driver,
+        'driver post': 'This is a post from the driver.' 
+    }
+
+    return render_template('driver.html', driver=driver, driver_info=driver_info)
