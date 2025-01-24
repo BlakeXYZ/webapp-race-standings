@@ -1,4 +1,5 @@
 import subprocess
+from datetime import date
 import sqlalchemy as sa
 import sqlalchemy.orm as so 
 
@@ -9,12 +10,14 @@ from app.models import Driver, Event
 @app.shell_context_processor
 def make_shell_context():
     return {
+        'date': date,
         'sa': sa, 
         'so': so, 
         'db': db, 
         'Driver': Driver, 
         'Event': Event,
         'gad': get_all_drivers,
+        'gae': get_all_events,
         'trunc': truncate_tables
     }
 
@@ -25,6 +28,14 @@ def get_all_drivers():
     print('Printing all drivers:')
     for u in drivers:
         print(f'id: {u.id} driver_name: {u.driver_name} driver_car: {u.driver_car}')
+
+def get_all_events():
+    """Utility function to get all events from the database."""
+    query = sa.select(Event)
+    events = db.session.scalars(query)
+    print('Printing all events:')
+    for u in events:
+        print(f'id: {u.id} event_name: {u.event_name} event_date: {u.event_date}')
 
 def truncate_tables():
     """Utility function to truncate all tables in the database."""

@@ -25,15 +25,29 @@ def my_index():
 
 @app.route('/about')
 def my_about():
+
+    driver_name = 'driver01'
+    driver = db.first_or_404(sa.select(Driver).where(Driver.driver_name == driver_name))
+    
+    driver_post = {
+        'driver': driver,
+        'driver_post': 'This is a post from the driver.' 
+    }
+
+    print(f"{driver =}")
+
     return render_template('about.html', title='About')
 
 @app.route('/driver/<driver_name>')
 def driver(driver_name):
     driver = db.first_or_404(sa.select(Driver).where(Driver.driver_name == driver_name))
+ 
+    return render_template('driver.html', driver=driver)
 
-    driver_info = {
-        'driver': driver,
-        'driver post': 'This is a post from the driver.' 
-    }
+@app.route('/event/<int:event_id>')
+def event(event_id):
+    event = db.first_or_404(sa.select(Event).where(Event.id == event_id))
 
-    return render_template('driver.html', driver=driver, driver_info=driver_info)
+    return render_template('event.html', event=event)
+    
+    
