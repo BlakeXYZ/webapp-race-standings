@@ -20,21 +20,23 @@
 
 
         <div>
+            <br>
             <a href="{{ url_for('my_index') }}">Home</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
             <a href="{{ url_for('my_about') }}">About</a>
-        </div>
-
-        <hr>
-
-        <div class="dropdown">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+  
+  
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 2024 Season
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 {% for event in events %}
-                    <li><a class="dropdown-item" href="{{ url_for('event', event_id=event.id) }}">Event {{ event.id }}</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('event', event_id=event.id) }}"> {{ event.event_date.strftime('%b') }}.  {{ event.event_date.strftime('%d') }} Event</a></li>
                 {% endfor %}     
             </ul>
+
+
         </div>
 
         <p> 
