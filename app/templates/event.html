@@ -5,6 +5,14 @@
     <h2>Event: {{ event.event_name }}</h2>
     <h4>Event Date: {{ event.event_date.strftime('%a') }}. {{ event.event_date.strftime('%B') }} {{ event.event_date.strftime('%d')}}, {{ event.event_date.strftime('%Y') }}</h4>
 
+    <p>
+        <h4>Drivers:</h4>
+        <ul>
+            {% for laptime in event.laptimes %}
+            <li><a href="{{ url_for('driver', driver_name=laptime.driver.driver_name) }}">{{ laptime.driver.driver_name }}</a> - {{ laptime.driver.driver_car}} - {{ laptime.laptime }} </li>
+            {% endfor %}
+        </ul>
+    </p>
 
 
 {% endblock %}

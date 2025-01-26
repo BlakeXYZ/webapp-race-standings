@@ -1,21 +1,23 @@
 import subprocess
-from datetime import date
+from datetime import date, timedelta
 import sqlalchemy as sa
 import sqlalchemy.orm as so 
 
 from app import app, db
-from app.models import Driver, Event
+from app.models import Driver, Event, Laptime
 
 
 @app.shell_context_processor
 def make_shell_context():
     return {
         'date': date,
+        'timedelta': timedelta,
         'sa': sa, 
         'so': so, 
         'db': db, 
         'Driver': Driver, 
         'Event': Event,
+        'Laptime': Laptime,
         'gad': get_all_drivers,
         'gae': get_all_events,
         'trunc': truncate_tables
