@@ -32,7 +32,7 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 {% for event in events %}
-                    <li><a class="dropdown-item" href="{{ url_for('event', event_id=event.id) }}"> {{ event.event_date.strftime('%b') }}.  {{ event.event_date.strftime('%d') }} Event</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('event', year=event.event_date.strftime('%Y'), event_id=event.id)  }}"> {{ event.event_date.strftime('%b') }}.  {{ event.event_date.strftime('%d') }} Event</a></li>
                 {% endfor %}     
             </ul>
 

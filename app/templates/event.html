@@ -8,8 +8,8 @@
     <p>
         <h4>Drivers:</h4>
         <ul>
-            {% for laptime in event.laptimes %}
-            <li><a href="{{ url_for('driver', driver_name=laptime.driver.driver_name) }}">{{ laptime.driver.driver_name }}</a> - {{ laptime.driver.driver_car}} - {{ laptime.laptime }} </li>
+            {% for driver_event in event.driver_events %}
+            <li><a href="{{ url_for('driver', driver_id=driver_event.driver.id, slug=driver_event.driver.get_slug()) }}">{{ driver_event.driver.driver_name }}</a> - {{ driver_event.car}} - {{ driver_event.car_class}}- {{ driver_event.laptimes }} </li>
             {% endfor %}
         </ul>
     </p>

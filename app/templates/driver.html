@@ -3,14 +3,12 @@
 {% block content %}
 
     <h2> Driver: {{ driver.driver_name}} </h2>
-    <h4> Driver Car: {{ driver.driver_car }}</h4>
-
 
     <p>
         <h4>Events:</h4>
         <ul>
-            {% for laptime in driver.laptimes %}
-            <li><a href="{{ url_for('event', event_id=laptime.event.id) }}">{{ laptime.event.event_name }}</a> - {{ laptime.driver.driver_car}} - {{ laptime.laptime }} </li>
+            {% for driver_event in driver.driver_events %}
+            <li><a href="{{ url_for('event', year=driver_event.event.event_date.strftime('%Y'), event_id=driver_event.event.id) }}">{{ driver_event.event.event_name }}</a> - {{ driver_event.car}} - {{ driver_event.car_class}}- {{ driver_event.laptimes }} </li>
             {% endfor %}
         </ul>
     </p>
