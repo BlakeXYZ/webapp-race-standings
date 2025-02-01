@@ -1,0 +1,47 @@
+// Database Markup Language
+// Use DBML to define your database structure
+// https://dbdiagram.io/d
+// Docs: https://dbml.dbdiagram.io/docs
+
+
+Table Driver {
+    id int 
+    driver_name varchar
+}
+
+
+Table Event {
+    id integer 
+    event_name varchar 
+    event_date date 
+}
+
+Table DriverEvent {
+    id int
+    driver_id int
+    event_id int
+    car varchar
+    car_class varchar
+}
+
+Table Laptime {
+    id int
+    driver_event_id int
+    laptime interval
+    run_number int
+}
+
+Table DriverEventStats {
+    id int
+    driver_event_id int
+    fastest_lap interval
+    average_lap interval
+    total_laps int
+}
+
+
+// Relationships
+Ref: DriverEvent.driver_id > Driver.id
+Ref: DriverEvent.event_id > Event.id
+Ref: Laptime.driver_event_id > DriverEvent.id
+Ref: DriverEventStats.driver_event_id > DriverEvent.id

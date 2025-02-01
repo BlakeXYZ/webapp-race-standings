@@ -4,7 +4,7 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so 
 
 from app import app, db
-from app.models import Driver, Event, Laptime
+from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
 
 
 @app.shell_context_processor
@@ -17,9 +17,14 @@ def make_shell_context():
         'db': db, 
         'Driver': Driver, 
         'Event': Event,
+        'Car': Car,
         'Laptime': Laptime,
         'gad': get_all_drivers,
         'gae': get_all_events,
+        'gac': get_all_cars,
+        'gde': get_driver_events,
+        'gdes': get_driver_event_stats,
+        'gl': get_laptimes,
         'trunc': truncate_tables
     }
 
@@ -29,7 +34,7 @@ def get_all_drivers():
     drivers = db.session.scalars(query)
     print('Printing all drivers:')
     for u in drivers:
-        print(f'id: {u.id} driver_name: {u.driver_name} driver_car: {u.driver_car}')
+        print(f'id: {u.id} driver_name: {u.driver_name}')
 
 def get_all_events():
     """Utility function to get all events from the database."""
@@ -38,6 +43,38 @@ def get_all_events():
     print('Printing all events:')
     for u in events:
         print(f'id: {u.id} event_name: {u.event_name} event_date: {u.event_date}')
+
+def get_all_cars():
+    """Utility function to get all cars from the database."""
+    query = sa.select(Car)
+    cars = db.session.scalars(query)
+    print('Printing all cars:')
+    for u in cars:
+        print(f'id: {u.id} car_name: {u.car_name} car_class: {u.car_class}')
+
+def get_driver_events():
+    """Utility function to get all driver events from the database."""
+    query = sa.select(DriverEvent)
+    driver_events = db.session.scalars(query)
+    print('Printing all driver events:')
+    for u in driver_events:
+        print(f'id: {u.id} driver_id: {u.driver_id} event_id: {u.event_id}')
+
+def get_driver_event_stats():
+    """Utility function to get all driver event stats from the database."""
+    query = sa.select(DriverEventStats)
+    driver_event_stats = db.session.scalars(query)
+    print('Printing all driver event stats:')
+    for u in driver_event_stats:
+        print(f'id: {u.id} driver_event_id: {u.driver_event_id} avg_laptime: {u.avg_laptime}')
+
+def get_laptimes():
+    """Utility function to get all laptimes from the database."""
+    query = sa.select(Laptime)
+    laptimes = db.session.scalars(query)
+    print('Printing all laptimes:')
+    for u in laptimes:
+        print(f'id: {u.id} driver_event_id: {u.driver_event_id} run_number: {u.run_number}')
 
 def truncate_tables():
     """Utility function to truncate all tables in the database."""

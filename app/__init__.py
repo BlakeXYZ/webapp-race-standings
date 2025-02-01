@@ -28,7 +28,7 @@ if not app.debug:
     app.logger.info('Microblog startup')
 
 
-from app import routes, models, errors
+from app import routes, models, event_listeners, errors
 from app.models import Driver, Event
 
 #TODO: Find better home for global variables and init functions
