@@ -16,12 +16,19 @@ Table Event {
     event_date date 
 }
 
+
+Table Car {
+    id integer 
+    car_name varchar 
+    car_class varchar 
+}
+
+
 Table DriverEvent {
     id int
     driver_id int
     event_id int
-    car varchar
-    car_class varchar
+    car_id int
 }
 
 Table Laptime {
@@ -43,5 +50,6 @@ Table DriverEventStats {
 // Relationships
 Ref: DriverEvent.driver_id > Driver.id
 Ref: DriverEvent.event_id > Event.id
+Ref: DriverEvent.car_id > Car.id
 Ref: Laptime.driver_event_id > DriverEvent.id
 Ref: DriverEventStats.driver_event_id > DriverEvent.id
