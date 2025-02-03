@@ -35,6 +35,7 @@ def update_driver_event_stats(target):
             )
         
         db.session.add(set_driver_event_stats)
+        
 
     if this_laps_driverEventStats:
 
@@ -42,11 +43,9 @@ def update_driver_event_stats(target):
         print(f"total laps before update: {this_laps_driverEventStats.total_laps}")
 
 
-        this_laps_driverEventStats.total_laps = total_runs
-        db.session.merge(this_laps_driverEventStats)  # Merge to avoid overriding the session state
+        db.session.dirty.add(this_laps_driverEventStats)
 
         print(f"total laps after update: {this_laps_driverEventStats.total_laps}")
-
 
 
 

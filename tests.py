@@ -17,7 +17,7 @@ def update_driver_event_stats(target):
     this_laps_driverEventStats = db.session.query(DriverEventStats).filter_by(driver_event=target.driver_event).first()
     total_runs = len(laptimes)
     total_time = sum((lt.laptime for lt in laptimes), timedelta())
-    avg_laptime = total_time / total_runs if total_runs > 0 else None
+    avg_laptime = total_time / total_runs 
     min_laptime = min((lt.laptime for lt in laptimes), default=None)
     max_laptime = max((lt.laptime for lt in laptimes), default=None)
 
@@ -45,6 +45,9 @@ def update_driver_event_stats(target):
 
 
         this_laps_driverEventStats.total_laps = total_runs
+        this_laps_driverEventStats.fastest_lap = min_laptime
+        this_laps_driverEventStats.average_lap = avg_laptime
+        
 
         print(f"total laps after update: {this_laps_driverEventStats.total_laps}")
 
@@ -81,9 +84,9 @@ class DriverEventModelCase(unittest.TestCase):
         db.session.commit()
 
         l = Laptime(driver_event=de, laptime=timedelta(minutes=1, seconds=30), run_number=1)
-        db.session.add(l)
-        update_driver_event_stats(l)
-        db.session.commit()
+        db.session.add(l)               ###########
+        update_driver_event_stats(l)    ###########
+        db.session.commit()             ###########
         print(f"session committed")
         stats = db.session.query(DriverEventStats).filter_by(driver_event=de).first()
         print(f"Stats: {stats}")
@@ -94,12 +97,13 @@ class DriverEventModelCase(unittest.TestCase):
 
         print(f"ADDING SECOND LAP -------------------------------------------------------")
         l_2 = Laptime(driver_event=de, laptime=timedelta(minutes=3, seconds=30), run_number=2)
-        db.session.add(l_2)  
-        update_driver_event_stats(l_2)
-        db.session.commit()
+        db.session.add(l_2)             ###########
+        update_driver_event_stats(l_2)  ###########   
+        db.session.commit()             ###########
         print(f"session committed")
-        stats = db.session.query(DriverEventStats).filter_by(driver_event=de).all()
+        stats = db.session.query(DriverEventStats).filter_by(driver_event=de).first()
         print(f"New Stats after adding 2nd lap: {stats}")
+
 
         #query all laps
         laptimes = db.session.query(Laptime).filter_by(driver_event=de).all()
