@@ -71,8 +71,6 @@ class DriverEvent(db.Model):
     Association table to link drivers to events with unique cars and classes.
 
     example driver_event add to db:
-
-    new_driver_event = DriverEvent(driver_id=1, event_id=1, car='Subaru', car_class='AWD')
         
     """
     # prevents duplicate entries for the same driver, event, and car combination

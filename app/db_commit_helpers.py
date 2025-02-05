@@ -4,8 +4,73 @@ from sqlalchemy.exc import IntegrityError
 from app import db
 from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
 
+#TODO: Reasearch clean CRUD operations for backend automation.
+#TODO: How to interact with ingestion of data?
 
-def update_driver_event_stats(my_laptime):
+def fetch_or_create_driver(driver_name):
+    driver = db.session.query(Driver).filter_by(driver_name=driver_name).first()
+    if driver is None:
+        driver = Driver(driver_name=driver_name)
+        db.session.add(driver)
+        db.session.commit()
+        print(f"Driver {driver_name} created.")
+    return driver
+
+def fetch_or_create_event(event_name):
+    event = db.session.query(Event).filter_by(event_name=event_name).first()
+    if event is None:
+        event = Event(event_name=event_name)
+        db.session.add(event)
+        db.session.commit()
+        print(f"Event {event_name} created.")
+    return event
+
+def fetch_or_create_car(car_name, car_class):
+    car = db.session.query(Car).filter_by(car_name=car_name, car_class=car_class).first()
+    if car is None:
+        car = Car(car_name=car_name, car_class=car_class)
+        db.session.add(car)
+        db.session.commit()
+        print(f"Car {car_name} ({car_class}) created.")
+    return car
+
+def create_driverEvent(driver_name, event_name, car_name, car_class):
+
+    # Assuming you have already imported the necessary modules and set up the session
+    # Retrieve the existing driver, event, car, and car_class instances
+    driver = db.session.query(Driver).filter_by(driver_name=driver_name).first()
+    event = db.session.query(Event).filter_by(event_name=event_name).first()
+    car = db.session.query(Car).filter_by(car_name=car_name, car_class=car_class).first()
+
+    if driver is None:
+        add_driver(driver_name)
+        driver = db.session.query(Driver).filter_by(driver_name=driver_name).first()
+
+    if event is None:
+        add_event(event_name)
+        event = db.session.query(Event).filter_by(event_name=event_name).first()
+
+    if car is None:
+        add_car(car_name, car_class)
+        car = db.session.query(Car).filter_by(car_name=car_name, car_class=car_class).first()
+
+    # Ensure the instances exist
+    if driver and event and car:
+        try:
+            # Create the DriverEvent instance
+            driver_event = DriverEvent(driver=driver, event=event, car=car)
+            db.session.add(driver_event)
+            db.session.commit()
+            print("DriverEvent created successfully.")
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(f"IntegrityError occurred: {e}")
+    else:
+        print("One or more instances not found.")
+        print(f"Driver: {driver}, Event: {event}, Car: {car}")
+
+def update_or_create_driverEventStats(my_laptime):
     print("-"*20)
     print(f"Running Event Listener for {my_laptime}")
     print(f"Driver Event: {my_laptime.driver_event}")
@@ -48,6 +113,8 @@ def update_driver_event_stats(my_laptime):
 
         print(f"total laps after update: {this_laps_driverEventStats.total_laps}")
 
+
+    
 
 
 # @event.listens_for(Laptime, 'after_insert')

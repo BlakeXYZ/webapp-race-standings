@@ -1,10 +1,13 @@
 import subprocess
-from datetime import date, timedelta
+from datetime import date, datetime, timezone, timedelta
+
 import sqlalchemy as sa
 import sqlalchemy.orm as so 
 
 from app import app, db
 from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
+from app.event_listeners import update_driver_event_stats
+from app.event_listeners import add_driver, add_event, add_car, add_driverEvent
 
 
 @app.shell_context_processor
@@ -25,7 +28,13 @@ def make_shell_context():
         'gde': get_driver_events,
         'gdes': get_driver_event_stats,
         'gl': get_laptimes,
-        'trunc': truncate_tables
+        'trunc': truncate_tables,
+        'udes': update_driver_event_stats,
+        'ad': add_driver,
+        'ae': add_event,
+        'ac': add_car,
+        'ade': add_driverEvent,
+
     }
 
 def get_all_drivers():
@@ -58,7 +67,7 @@ def get_driver_events():
     driver_events = db.session.scalars(query)
     print('Printing all driver events:')
     for u in driver_events:
-        print(f'id: {u.id} driver_id: {u.driver_id} event_id: {u.event_id}')
+        print(f'id: {u.id} driver_name: {u.driver.driver_name} event_name: {u.event.event_name} car_name: {u.car.car_name} car_class: {u.car.car_class}')
 
 def get_driver_event_stats():
     """Utility function to get all driver event stats from the database."""

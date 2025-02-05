@@ -1,8 +1,8 @@
-"""Initial migration
+"""Initial migration.
 
-Revision ID: 41ee2563c507
+Revision ID: 8751366afa5e
 Revises: 
-Create Date: 2025-01-31 22:17:41.108542
+Create Date: 2025-02-04 22:35:49.539134
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '41ee2563c507'
+revision = '8751366afa5e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,7 +22,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('car_name', sa.String(length=64), nullable=False),
     sa.Column('car_class', sa.String(length=64), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('car_name', 'car_class', name='unique_car')
     )
     with op.batch_alter_table('car', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_car_car_class'), ['car_class'], unique=False)
@@ -54,7 +55,8 @@ def upgrade():
     sa.ForeignKeyConstraint(['car_id'], ['car.id'], ),
     sa.ForeignKeyConstraint(['driver_id'], ['driver.id'], ),
     sa.ForeignKeyConstraint(['event_id'], ['event.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('driver_id', 'event_id', 'car_id', name='unique_driver_event')
     )
     with op.batch_alter_table('driver_event', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_driver_event_car_id'), ['car_id'], unique=False)
