@@ -7,7 +7,7 @@ from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptim
 #TODO: Reasearch clean CRUD operations for backend automation.
 #TODO: How to interact with ingestion of data?
 #      - For managing DB, can explore:
-#         - Flask-Admin (need to Authenticate and Secure)
+#         - Flask-Admin (need to Authenticate and Secure) - https://youtu.be/G1FBSYJ45Ww?si=eUmWc1oa62Sedyzi
 #         - Webhook (endpoints that listen for POST requests) (need to Authenticate and Secure)
 #         - API (endpoints that listen for GET/POST requests) (need to Authenticate and Secure)
 #         
