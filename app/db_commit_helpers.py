@@ -9,9 +9,38 @@ from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptim
 #      - For managing DB, can explore:
 #         - Flask-Admin (need to Authenticate and Secure) - https://youtu.be/G1FBSYJ45Ww?si=eUmWc1oa62Sedyzi
 #         - Webhook (endpoints that listen for POST requests) (need to Authenticate and Secure)
-#         - API (endpoints that listen for GET/POST requests) (need to Authenticate and Secure)
-#         
-#      - Ask for CSV data and learn details of current ingestion to Google Sheets API
+#                Use webhooks if an external service needs to push data to your app automatically.
+#                Use API endpoints if your app needs to fetch or update data on demand.
+#                Combine both for efficient real-time data processing.   
+#
+# When to Use a Webhook?
+#
+# ✅ When an external service needs to notify your app in real time.
+#
+#     A Google Sheet cell is updated → Sends webhook to your Flask app.
+#     A new payment is made in Stripe → Sends webhook to update your database.
+#     A GitHub commit is pushed → Sends webhook to trigger a CI/CD build.
+#
+# 🔹 Best for: Receiving event-based updates automatically.
+# 🔹 Downside: If your server is down, you may miss the update unless retries are built in.
+
+
+# When to Use an API Endpoint?
+#
+# ✅ When your app needs to request or modify data on demand.
+#
+#     Your frontend calls /users/1 to get a user’s profile.
+#     A script calls /products to fetch a product list.
+#     A mobile app submits a form via /submit-form.
+#
+# 🔹 Best for: On-demand interactions where you need full control.
+# 🔹 Downside: If polling frequently, can waste resources and cause delays.
+
+# 
+# 
+#  
+#TODO:  - Ask for CSV data and learn details of current ingestion to Google Sheets API
+
 
 #TODO: Build UI Design, loading animation
 #TODO: Build out baseline Front End View with current Model Setup. **Show Proof of Concept!**
