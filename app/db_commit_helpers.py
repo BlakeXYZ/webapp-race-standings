@@ -14,7 +14,7 @@ from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptim
 #      - Ask for CSV data and learn details of current ingestion to Google Sheets API
 
 #TODO: Build UI Design, loading animation
-#TODO: Build out baseline Front End View with current Model Setup
+#TODO: Build out baseline Front End View with current Model Setup. **Show Proof of Concept!**
 
 #example webhook
 # @app.route('/webhook', methods=['POST'])
