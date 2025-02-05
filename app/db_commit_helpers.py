@@ -6,6 +6,23 @@ from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptim
 
 #TODO: Reasearch clean CRUD operations for backend automation.
 #TODO: How to interact with ingestion of data?
+#      - For managing DB, can explore:
+#         - Flask-Admin (need to Authenticate and Secure)
+#         - Webhook (endpoints that listen for POST requests) (need to Authenticate and Secure)
+#         - API (endpoints that listen for GET/POST requests) (need to Authenticate and Secure)
+#         
+#      - Ask for CSV data and learn details of current ingestion to Google Sheets API
+
+#TODO: Build UI Design, loading animation
+#TODO: Build out baseline Front End View with current Model Setup
+
+#example webhook
+# @app.route('/webhook', methods=['POST'])
+# def handle_webhook():
+#     data = request.json  # Get JSON payload from webhook
+#     print("Received webhook data:", data)
+#     # Process the data here (e.g., update database, trigger actions)
+#     return jsonify({"message": "Webhook received!"}), 200
 
 def fetch_or_create_driver(driver_name):
     driver = db.session.query(Driver).filter_by(driver_name=driver_name).first()
