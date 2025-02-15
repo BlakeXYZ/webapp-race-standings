@@ -1,4 +1,4 @@
-from datetime import date, timezone, timedelta
+import datetime
 from sqlalchemy.exc import IntegrityError
 
 from app import db
@@ -77,16 +77,16 @@ def add_item(db_session, model, **kwargs):
     db_session.add(item)
     return item
 
-def add_driver(db_session, driver_name):
+def add_driver(db_session, driver_name: str):
     return add_item(db_session, Driver, driver_name=driver_name)
 
-def add_event(db_session, event_name, event_date):
+def add_event(db_session, event_name: str, event_date: datetime.date):
     return add_item(db_session, Event, event_name=event_name, event_date=event_date)
 
-def add_car(db_session, car_name, car_class):
+def add_car(db_session, car_name: str, car_class: str):
     return add_item(db_session, Car, car_name=car_name, car_class=car_class)
     
-def add_driverEvent(db_session, driver_name, event_name, event_date, car_name, car_class):
+def add_driverEvent(db_session, driver_name: str, event_name: str, event_date: datetime.date, car_name: str, car_class: str):
     driver = db_session.query(Driver).filter_by(driver_name=driver_name).first()
     event = db_session.query(Event).filter_by(event_name=event_name, event_date=event_date).first()
     car = db_session.query(Car).filter_by(car_name=car_name, car_class=car_class).first()
@@ -106,16 +106,32 @@ def add_driverEvent(db_session, driver_name, event_name, event_date, car_name, c
         return None
 
 
+# #TODO how best to query info for laptime add? How to associate driver_event_id during DB Update?
+def add_laptime(db_session, driver_event_id: int, laptime: datetime.timedelta):
 
+    driver_event = db_session.query(DriverEvent).filter_by(id=driver_event_id).first()
+    if driver_event is None:
+        raise ValueError(f"DriverEvent with id {driver_event_id} does not exist")
 
+    #dynamically set run_number
+    laptimes = db_session.query(Laptime).filter_by(driver_event=driver_event).all()
+    run_number = len(laptimes)+1
+    print(f"laptime count: {run_number}") 
 
+    added_laptime = add_item(db_session, Laptime, driver_event_id=driver_event_id, laptime=laptime, run_number=run_number)
 
-def update_or_create_driverEventStats(db_session, my_laptime):
+    db.session.refresh(driver_event)
+    _update_or_create_driverEventStats(db.session, added_laptime)
+    db.session.refresh(driver_event)
+
+    return added_laptime
+
+def _update_or_create_driverEventStats(db_session, my_laptime: Laptime):
 
     laptimes = db.session.query(Laptime).filter_by(driver_event=my_laptime.driver_event).all()
     this_laps_driverEventStats = db.session.query(DriverEventStats).filter_by(driver_event=my_laptime.driver_event).first()
     total_runs = len(laptimes)
-    total_time = sum((lt.laptime for lt in laptimes), timedelta())
+    total_time = sum((lt.laptime for lt in laptimes), datetime.timedelta())
     avg_laptime = total_time / total_runs if total_runs > 1 else total_time
     min_laptime = min((lt.laptime for lt in laptimes), default=None)
     max_laptime = max((lt.laptime for lt in laptimes), default=None)
@@ -145,23 +161,4 @@ def update_or_create_driverEventStats(db_session, my_laptime):
 
 
 
-
-# #TODO how best to query info for laptime add? How to associate driver_event_id during DB Update?
-def add_laptime(db_session, driver_event_id, laptime):
-    driver_event = db_session.query(DriverEvent).filter_by(id=driver_event_id).first()
-    if driver_event is None:
-        raise ValueError(f"DriverEvent with id {driver_event_id} does not exist")
-
-    #dynamicallly get run_number
-    laptimes = db_session.query(Laptime).filter_by(driver_event=driver_event).all()
-
-    print(f"laptime count: {len(laptimes)+1}") 
-
-    return add_item(db_session, Laptime, driver_event_id=driver_event_id, laptime=laptime, run_number=len(laptimes)+1)
-    
-
-
-
-
-
-
+# def format_timedelta(td):

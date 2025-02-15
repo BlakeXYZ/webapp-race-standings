@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app import app, db
 from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
-from app.db_commit_helpers import add_driverEvent, add_laptime, update_or_create_driverEventStats
+from app.db_commit_helpers import add_driverEvent, add_laptime
 from config import Config
 
 class TestConfig(Config):
@@ -127,15 +127,18 @@ class DriverEventModelCase(unittest.TestCase):
 
         # print(f"DriverEvent: {de}")
         
-        #TODO: Trigger update_or_create_driverEventStats() inside add_laptime() function
-        lt = add_laptime(db.session, 1, datetime.timedelta(minutes=1, seconds=10))
-        db.session.refresh(de)
-        des = update_or_create_driverEventStats(db.session, lt)
+        #TODO: Trigger update_or_create_driverEventStats() inside add_laptime() function? 
+        #       cant do that because update or create requires info after add_laptime is added to db
+        a = add_laptime(db.session, 1, datetime.timedelta(seconds=145))
+        print(f"Laptime: {a}")
         print(f"DriverEvent: {de}")
 
-        lt = add_laptime(db.session, 1, datetime.timedelta(minutes=1, seconds=55))
-        db.session.refresh(de)
-        des = update_or_create_driverEventStats(db.session, lt)
+        a = add_laptime(db.session, 1, datetime.timedelta(minutes=2, seconds=10))
+        print(f"Laptime: {a}")
+        print(f"DriverEvent: {de}")
+
+        a = add_laptime(db.session, 1, datetime.timedelta(minutes=3, seconds=00))
+        print(f"Laptime: {a}")
         print(f"DriverEvent: {de}")
 
 
