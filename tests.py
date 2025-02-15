@@ -127,15 +127,15 @@ class DriverEventModelCase(unittest.TestCase):
 
         # print(f"DriverEvent: {de}")
         
-
+        #TODO: Trigger update_or_create_driverEventStats() inside add_laptime() function
         lt = add_laptime(db.session, 1, datetime.timedelta(minutes=1, seconds=10))
         db.session.refresh(de)
-        des = update_or_create_driverEventStats(lt)
+        des = update_or_create_driverEventStats(db.session, lt)
         print(f"DriverEvent: {de}")
 
         lt = add_laptime(db.session, 1, datetime.timedelta(minutes=1, seconds=55))
         db.session.refresh(de)
-        des = update_or_create_driverEventStats(lt)
+        des = update_or_create_driverEventStats(db.session, lt)
         print(f"DriverEvent: {de}")
 
 

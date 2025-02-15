@@ -110,7 +110,7 @@ def add_driverEvent(db_session, driver_name, event_name, event_date, car_name, c
 
 
 
-def update_or_create_driverEventStats(my_laptime):
+def update_or_create_driverEventStats(db_session, my_laptime):
 
     laptimes = db.session.query(Laptime).filter_by(driver_event=my_laptime.driver_event).all()
     this_laps_driverEventStats = db.session.query(DriverEventStats).filter_by(driver_event=my_laptime.driver_event).first()
@@ -127,15 +127,8 @@ def update_or_create_driverEventStats(my_laptime):
 
     if this_laps_driverEventStats is None:
         print(f"Creating new DriverEventStats for {my_laptime.driver_event} -------")
-
-        set_driver_event_stats = DriverEventStats(
-            driver_event_id=my_laptime.driver_event.id,
-            fastest_lap=min_laptime,
-            average_lap=avg_laptime,
-            total_laps=total_runs
-            )
         
-        db.session.add(set_driver_event_stats)
+        return add_item(db_session, DriverEventStats, driver_event_id=my_laptime.driver_event.id, fastest_lap=min_laptime, average_lap=avg_laptime, total_laps=total_runs)
 
     if this_laps_driverEventStats:
 
@@ -162,7 +155,7 @@ def add_laptime(db_session, driver_event_id, laptime):
     #dynamicallly get run_number
     laptimes = db_session.query(Laptime).filter_by(driver_event=driver_event).all()
 
-    print(f"laptime count: {len(laptimes)}") 
+    print(f"laptime count: {len(laptimes)+1}") 
 
     return add_item(db_session, Laptime, driver_event_id=driver_event_id, laptime=laptime, run_number=len(laptimes)+1)
     
