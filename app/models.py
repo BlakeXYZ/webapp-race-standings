@@ -111,8 +111,8 @@ class DriverEventStats(db.Model):
     driver_event: so.Mapped["DriverEvent"] = so.relationship("DriverEvent", back_populates="driver_event_stats")
 
     def __repr__(self):
-        return '<DriverEventStats driver_event={} fastest_lap={} average_lap={} total_laps={}>'.format(
-            self.driver_event, self.fastest_lap, self.average_lap, self.total_laps)
+        return '<DriverEventStats fastest_lap={} average_lap={} total_laps={}>'.format(
+            self.fastest_lap, self.average_lap, self.total_laps)
 
 class Laptime(db.Model):
     """

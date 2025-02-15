@@ -111,15 +111,12 @@ def add_driverEvent(db_session, driver_name, event_name, event_date, car_name, c
 
 
 def update_or_create_driverEventStats(my_laptime):
-    print("-"*20)
-    print(f"Running Event Listener for {my_laptime}")
-    print(f"Driver Event: {my_laptime.driver_event}")
 
     laptimes = db.session.query(Laptime).filter_by(driver_event=my_laptime.driver_event).all()
     this_laps_driverEventStats = db.session.query(DriverEventStats).filter_by(driver_event=my_laptime.driver_event).first()
     total_runs = len(laptimes)
     total_time = sum((lt.laptime for lt in laptimes), timedelta())
-    avg_laptime = total_time / total_runs 
+    avg_laptime = total_time / total_runs if total_runs > 1 else total_time
     min_laptime = min((lt.laptime for lt in laptimes), default=None)
     max_laptime = max((lt.laptime for lt in laptimes), default=None)
 
@@ -153,7 +150,10 @@ def update_or_create_driverEventStats(my_laptime):
 
         print(f"total laps after update: {this_laps_driverEventStats.total_laps}")
 
-# #TODO how best to query info for laptime add?
+
+
+
+# #TODO how best to query info for laptime add? How to associate driver_event_id during DB Update?
 def add_laptime(db_session, driver_event_id, laptime):
     driver_event = db_session.query(DriverEvent).filter_by(id=driver_event_id).first()
     if driver_event is None:

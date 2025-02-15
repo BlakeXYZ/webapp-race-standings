@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app import app, db
 from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
-from app.db_commit_helpers import add_driverEvent, add_laptime
+from app.db_commit_helpers import add_driverEvent, add_laptime, update_or_create_driverEventStats
 from config import Config
 
 class TestConfig(Config):
@@ -129,10 +129,13 @@ class DriverEventModelCase(unittest.TestCase):
         
 
         lt = add_laptime(db.session, 1, datetime.timedelta(minutes=1, seconds=10))
-        print(f"DriverEvent: {de}")
         db.session.refresh(de)
+        des = update_or_create_driverEventStats(lt)
+        print(f"DriverEvent: {de}")
 
         lt = add_laptime(db.session, 1, datetime.timedelta(minutes=1, seconds=55))
+        db.session.refresh(de)
+        des = update_or_create_driverEventStats(lt)
         print(f"DriverEvent: {de}")
 
 
