@@ -116,7 +116,6 @@ def add_laptime(db_session, driver_event_id: int, laptime: datetime.timedelta):
     #dynamically set run_number
     laptimes = db_session.query(Laptime).filter_by(driver_event=driver_event).all()
     run_number = len(laptimes)+1
-    print(f"laptime count: {run_number}") 
 
     added_laptime = add_item(db_session, Laptime, driver_event_id=driver_event_id, laptime=laptime, run_number=run_number)
 
@@ -158,7 +157,3 @@ def _update_or_create_driverEventStats(db_session, my_laptime: Laptime):
         
 
         print(f"total laps after update: {this_laps_driverEventStats.total_laps}")
-
-
-
-# def format_timedelta(td):

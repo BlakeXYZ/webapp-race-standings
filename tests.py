@@ -123,21 +123,15 @@ class DriverEventModelCase(unittest.TestCase):
 
         de = add_driverEvent(db.session, driver_name, event_name, event_date, car_name, car_class)
 
-        # lt = add_laptime(db.session, 1, datetime.timedelta(minutes=1, seconds=30))
-
-        # print(f"DriverEvent: {de}")
-        
-        #TODO: Trigger update_or_create_driverEventStats() inside add_laptime() function? 
-        #       cant do that because update or create requires info after add_laptime is added to db
-        a = add_laptime(db.session, 1, datetime.timedelta(seconds=145))
+        a = add_laptime(db.session, driver_event_id=1, laptime=datetime.timedelta(seconds=145))
         print(f"Laptime: {a}")
         print(f"DriverEvent: {de}")
 
-        a = add_laptime(db.session, 1, datetime.timedelta(minutes=2, seconds=10))
+        a = add_laptime(db.session, driver_event_id=1, laptime=datetime.timedelta(minutes=2, seconds=10))
         print(f"Laptime: {a}")
         print(f"DriverEvent: {de}")
 
-        a = add_laptime(db.session, 1, datetime.timedelta(minutes=3, seconds=00))
+        a = add_laptime(db.session, driver_event_id=1, laptime=datetime.timedelta(minutes=3, seconds=00))
         print(f"Laptime: {a}")
         print(f"DriverEvent: {de}")
 
@@ -152,8 +146,6 @@ class DriverEventModelCase(unittest.TestCase):
         except IntegrityError as e:
             print(f"Error: {e}")
             db.session.rollback()
-
-
 
 
 
