@@ -6,8 +6,6 @@ import sqlalchemy.orm as so
 
 from app import app, db
 from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
-from app.event_listeners import update_driver_event_stats
-from app.event_listeners import add_driver, add_event, add_car, add_driverEvent
 
 
 @app.shell_context_processor

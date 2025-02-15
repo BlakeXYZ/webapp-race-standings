@@ -163,28 +163,6 @@ def update_or_create_driverEventStats(my_laptime):
     
 
 
-# @event.listens_for(Laptime, 'after_insert')
-# def after_insert_laptime(mapper, connection, target):
-#     print(f"Running Event Listener AFTER INSERT for {target}")
-#     add_driver_event_stats(target)
-
-# @event.listens_for(Laptime, 'after_update')
-# def after_update_laptime(mapper, connection, target):
-#     print(f"Running Event Listener AFTER UPDATE for {target}")
-#     update_driver_event_stats(target)
-
-# @event.listens_for(Laptime, 'after_delete')
-# def after_delete_laptime(mapper, connection, target):
-#     print(f"Running Event Listener AFTER DELETE for {target}")
-#     update_driver_event_stats(target)
-
-# @event.listens_for(db.session, 'after_flush')
-# def after_flush(session, context):
-#     print(f"New instances in session: {session.new}")
-#     for instance in session.new:
-#         if isinstance(instance, Laptime):
-#             print(f"Running Event Listener AFTER FLUSH for {instance}")
-#             update_driver_event_stats(instance)
 
 
 

@@ -6,7 +6,6 @@ import sqlalchemy.orm as so
 
 from app import app, db
 from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
-from app.event_listeners import add_driver_event_car_and_driverEvent, update_driver_event_stats
 from config import Config
 
 class TestConfig(Config):
@@ -74,7 +73,7 @@ class DriverEventModelCase(unittest.TestCase):
         # update_driver_event_stats(l)    ###########
         # db.session.commit()             ###########
         # print(f"session committed")
-        # stats = db.session.query(DriverEventStats).filter_by(driver_event=de).first()
+        # stats = db.session.query(DriverEventStats).filter_by(driver_event=de).first() 
         # print(f"Stats: {stats}")
 
         # #query all laps
