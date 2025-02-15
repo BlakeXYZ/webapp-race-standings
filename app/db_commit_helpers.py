@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, timedelta
+from datetime import date, timezone, timedelta
 from sqlalchemy.exc import IntegrityError
 
 from app import db
@@ -53,68 +53,62 @@ from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptim
 #     # Process the data here (e.g., update database, trigger actions)
 #     return jsonify({"message": "Webhook received!"}), 200
 
-def fetch_or_create_driver(driver_name):
-    driver = db.session.query(Driver).filter_by(driver_name=driver_name).first()
+
+#TODO: DB management. Do we want to auto Create if Fetch fails? What is CRUD Best practices?
+
+def add_item(db_session, model, **kwargs):
+    if not kwargs:
+        raise ValueError(f"{model.__name__} attributes cannot be None or empty")
+    if not all(hasattr(model, attr) for attr in kwargs.keys()):
+        raise ValueError(f"{model.__name__} does not have all the required attributes")
+    for attr, value in kwargs.items():
+        column = getattr(model, attr)
+        if hasattr(column, 'property') and hasattr(column.property, 'columns'):
+            column_type = column.property.columns[0].type.python_type
+            if not isinstance(value, column_type):
+                raise ValueError(f"Value for {attr} must be of type {column_type}")
+        elif hasattr(column, 'mapper'):
+            if not isinstance(value, column.mapper.class_):
+                raise ValueError(f"Value for {attr} must be of type {column.mapper.class_}")
+        else:
+            raise ValueError(f"Value for {attr} must be of type {type(column)}")
+
+    item = model(**kwargs)
+    db_session.add(item)
+    return item
+
+def add_driver(db_session, driver_name):
+    return add_item(db_session, Driver, driver_name=driver_name)
+
+def add_event(db_session, event_name, event_date):
+    return add_item(db_session, Event, event_name=event_name, event_date=event_date)
+
+def add_car(db_session, car_name, car_class):
+    return add_item(db_session, Car, car_name=car_name, car_class=car_class)
+    
+def add_driverEvent(db_session, driver_name, event_name, event_date, car_name, car_class):
+    driver = db_session.query(Driver).filter_by(driver_name=driver_name).first()
+    event = db_session.query(Event).filter_by(event_name=event_name, event_date=event_date).first()
+    car = db_session.query(Car).filter_by(car_name=car_name, car_class=car_class).first()
+
     if driver is None:
-        driver = Driver(driver_name=driver_name)
-        db.session.add(driver)
-        db.session.commit()
-        print(f"Driver {driver_name} created.")
-    return driver
-
-def fetch_or_create_event(event_name):
-    event = db.session.query(Event).filter_by(event_name=event_name).first()
-    if event is None:
-        event = Event(event_name=event_name)
-        db.session.add(event)
-        db.session.commit()
-        print(f"Event {event_name} created.")
-    return event
-
-def fetch_or_create_car(car_name, car_class):
-    car = db.session.query(Car).filter_by(car_name=car_name, car_class=car_class).first()
-    if car is None:
-        car = Car(car_name=car_name, car_class=car_class)
-        db.session.add(car)
-        db.session.commit()
-        print(f"Car {car_name} ({car_class}) created.")
-    return car
-
-def create_driverEvent(driver_name, event_name, car_name, car_class):
-
-    # Assuming you have already imported the necessary modules and set up the session
-    # Retrieve the existing driver, event, car, and car_class instances
-    driver = db.session.query(Driver).filter_by(driver_name=driver_name).first()
-    event = db.session.query(Event).filter_by(event_name=event_name).first()
-    car = db.session.query(Car).filter_by(car_name=car_name, car_class=car_class).first()
-
-    if driver is None:
-        add_driver(driver_name)
-        driver = db.session.query(Driver).filter_by(driver_name=driver_name).first()
+        driver = add_driver(db_session, driver_name)
 
     if event is None:
-        add_event(event_name)
-        event = db.session.query(Event).filter_by(event_name=event_name).first()
+        event = add_event(db_session, event_name, event_date)
 
     if car is None:
-        add_car(car_name, car_class)
-        car = db.session.query(Car).filter_by(car_name=car_name, car_class=car_class).first()
-
-    # Ensure the instances exist
+        car = add_car(db_session, car_name, car_class)
+    
     if driver and event and car:
-        try:
-            # Create the DriverEvent instance
-            driver_event = DriverEvent(driver=driver, event=event, car=car)
-            db.session.add(driver_event)
-            db.session.commit()
-            print("DriverEvent created successfully.")
-
-        except IntegrityError as e:
-            db.session.rollback()
-            print(f"IntegrityError occurred: {e}")
+        return add_item(db_session, DriverEvent, driver=driver, event=event, car=car)
     else:
-        print("One or more instances not found.")
-        print(f"Driver: {driver}, Event: {event}, Car: {car}")
+        return None
+
+
+
+
+
 
 def update_or_create_driverEventStats(my_laptime):
     print("-"*20)
@@ -159,7 +153,18 @@ def update_or_create_driverEventStats(my_laptime):
 
         print(f"total laps after update: {this_laps_driverEventStats.total_laps}")
 
+# #TODO how best to query info for laptime add?
+def add_laptime(db_session, driver_event_id, laptime):
+    driver_event = db_session.query(DriverEvent).filter_by(id=driver_event_id).first()
+    if driver_event is None:
+        raise ValueError(f"DriverEvent with id {driver_event_id} does not exist")
 
+    #dynamicallly get run_number
+    laptimes = db_session.query(Laptime).filter_by(driver_event=driver_event).all()
+
+    print(f"laptime count: {len(laptimes)}") 
+
+    return add_item(db_session, Laptime, driver_event_id=driver_event_id, laptime=laptime, run_number=len(laptimes)+1)
     
 
 

@@ -6,8 +6,6 @@ from slugify import slugify
 from app import db
 
 
-
-#TODO: How to account for driver having a unique car for each event?
 class Driver(db.Model):
     """
     example driver add to db:
@@ -27,7 +25,6 @@ class Driver(db.Model):
     
     def get_slug(self):
         return slugify(self.driver_name)
-
 
 class Event(db.Model):
     """
@@ -64,13 +61,15 @@ class Car(db.Model):
     driver_events: so.Mapped[list["DriverEvent"]] = so.relationship("DriverEvent", back_populates="car")
 
     def __repr__(self):
-        return '<Car {}>'.format(self.car_name)
+        return '<Car name={}, class={}>'.format(self.car_name, self.car_class)
     
 class DriverEvent(db.Model):
     """
     Association table to link drivers to events with unique cars and classes.
 
     example driver_event add to db:
+
+    new_driverEvent = DriverEvent(driver_id=1, event_id=1, car_id=1)
         
     """
     # prevents duplicate entries for the same driver, event, and car combination
@@ -89,7 +88,7 @@ class DriverEvent(db.Model):
     driver_event_stats: so.Mapped[list["DriverEventStats"]] = so.relationship("DriverEventStats", back_populates="driver_event")
 
     def __repr__(self):
-        return f"<DriverEvent driver={self.driver.driver_name} event={self.event.event_name} car={self.car.car_name} ({self.car.car_class})>"
+        return f"<DriverEvent {self.driver}, {self.event}, {self.car}, {self.driver_event_stats}, {self.laptimes}>"
         
 #TODO: store more statistics that are calculated from Laptimes (do it on the fly or store them in a separate table?)
 # this setup may be improper workflow?

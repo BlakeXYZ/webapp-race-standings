@@ -1,5 +1,5 @@
 import subprocess
-from datetime import date, datetime, timezone, timedelta
+from datetime import date, timezone, timedelta
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so 
@@ -27,11 +27,11 @@ def make_shell_context():
         'gdes': get_driver_event_stats,
         'gl': get_laptimes,
         'trunc': truncate_tables,
-        'udes': update_driver_event_stats,
-        'ad': add_driver,
-        'ae': add_event,
-        'ac': add_car,
-        'ade': add_driverEvent,
+        # 'udes': update_driver_event_stats,
+        # 'ad': add_driver,
+        # 'ae': add_event,
+        # 'ac': add_car,
+        # 'ade': add_driverEvent,
 
     }
 
