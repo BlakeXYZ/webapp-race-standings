@@ -1,10 +1,11 @@
 from typing import Optional
-import datetime
+import datetime 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from slugify import slugify  
 from app import db
 
+#TODO find alternative to datetime? outdated? datetime2 perhaps?
 
 class Driver(db.Model):
     """

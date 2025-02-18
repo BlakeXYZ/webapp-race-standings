@@ -6,6 +6,7 @@ import sqlalchemy.orm as so
 
 from app import app, db
 from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
+from app.db_commit_helpers import add_driverEvent, add_laptime
 
 
 @app.shell_context_processor
@@ -27,12 +28,8 @@ def make_shell_context():
         'gdes': get_driver_event_stats,
         'gl': get_laptimes,
         'trunc': truncate_tables,
-        # 'udes': update_driver_event_stats,
-        # 'ad': add_driver,
-        # 'ae': add_event,
-        # 'ac': add_car,
-        # 'ade': add_driverEvent,
-
+        'ade': add_driverEvent,
+        'al': add_laptime,
     }
 
 def get_all_drivers():
@@ -73,7 +70,7 @@ def get_driver_event_stats():
     driver_event_stats = db.session.scalars(query)
     print('Printing all driver event stats:')
     for u in driver_event_stats:
-        print(f'id: {u.id} driver_event_id: {u.driver_event_id} avg_laptime: {u.avg_laptime}')
+        print(f'id: {u.id} driver_event_id: {u.driver_event_id} avg_laptime: {u.average_lap} fastest_lap: {u.fastest_lap} total_laps: {u.total_laps}')
 
 def get_laptimes():
     """Utility function to get all laptimes from the database."""

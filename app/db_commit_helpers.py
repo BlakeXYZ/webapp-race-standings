@@ -157,3 +157,4 @@ def _update_or_create_driverEventStats(db_session, my_laptime: Laptime):
         
 
         print(f"total laps after update: {this_laps_driverEventStats.total_laps}")
+
