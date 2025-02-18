@@ -2,17 +2,31 @@
 
 {% block content %}
 
-    <h2>Event: {{ event.event_name }}</h2>
-    <h4>Event Date: {{ event.event_date.strftime('%a') }}. {{ event.event_date.strftime('%B') }} {{ event.event_date.strftime('%d')}}, {{ event.event_date.strftime('%Y') }}</h4>
+    <h2>{{ event.event_name }}</h2>
+    <h5>{{ event.event_date.strftime('%A') }}. {{ event.event_date.strftime('%B') }} {{ event.event_date.strftime('%d')}}, {{ event.event_date.strftime('%Y') }}</h5>
+    
+    <br>
 
-    <p>
-        <h4>Drivers:</h4>
-        <ul>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Driver</th>
+                <th>Car</th>
+                <th>Car Class</th>
+                <th>Laptimes</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for driver_event in event.driver_events %}
-            <li><a href="{{ url_for('driver', driver_id=driver_event.driver.id, slug=driver_event.driver.get_slug()) }}">{{ driver_event.driver.driver_name }}</a> - {{ driver_event.car}} - {{ driver_event.car_class}}- {{ driver_event.laptimes }} </li>
+            <tr>
+                <td><a href="{{ url_for('driver', driver_id=driver_event.driver.id, slug=driver_event.driver.get_slug()) }}">{{ driver_event.driver.driver_name }}</a></td>
+                <td>{{ driver_event.car.car_name }}</td>
+                <td>{{ driver_event.car.car_class }}</td>
+                <td>{{ driver_event.laptimes }}</td>
+            </tr>
             {% endfor %}
-        </ul>
-    </p>
+        </tbody>
+    </table>
 
 
 {% endblock %}
