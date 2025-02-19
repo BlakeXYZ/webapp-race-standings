@@ -7,13 +7,18 @@
     
     <br>
 
-    <table class="table table-striped">
+    <!-- TODO: Test bootstrap-table in its own env -->
+    <!-- https://bootstrap-table.com/versions/1.15.5/docs/getting-started/introduction/ -->
+
+
+    <table id="my-event-bootstrap-table">
+
         <thead>
             <tr>
-                <th>Driver</th>
-                <th>Car</th>
-                <th>Car Class</th>
-                <th>Laptimes</th>
+                <th data-field="my-driver" data-sortable="true">Driver</th>
+                <th data-field="my-car" data-sortable="true">Car</th>
+                <th data-sortable="true">Car Class</th>
+                <th data-sortable="true">Laptimes</th>
             </tr>
         </thead>
         <tbody>
