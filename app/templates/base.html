@@ -16,7 +16,7 @@
         <!-- Font Awesome CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/color-mode-toggle-style.css') }}">
 
         <!-- jQuery -->
         <script defer src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -49,6 +49,13 @@
                     <li><a class="dropdown-item" href="{{ url_for('event', year=event.event_date.strftime('%Y'), event_id=event.id)  }}"> {{ event.event_date.strftime('%b') }}.  {{ event.event_date.strftime('%d') }} Event</a></li>
                 {% endfor %}     
             </ul>
+            
+            <input type="checkbox" class="daynight-checkbox" id="daynight-checkbox">
+            <label for="daynight-checkbox" class="daynight-checkbox-label">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+                <span class="daynight-ball"></span>
+            </label>
 
 
         </div>
