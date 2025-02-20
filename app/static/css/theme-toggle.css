@@ -2,6 +2,11 @@
  * Theme toggle css for day and night mode - using https://youtu.be/Zb2QA71GLEQ?si=6nrFUeU1RCO6ze3z
  */
 
+/* Disable transitions initially */
+.no-transition * {
+    transition: none !important;
+}
+
 
 .daynight-checkbox{
     opacity: 0;
@@ -11,27 +16,42 @@
 
 .daynight-checkbox-label{
     background-color: #ada7ff;
-    width: 50px;
-    height: 26px;
+    width: 48px;
+    height: 24px;
     border-radius: 50px;
     position: relative;
     padding: 5px;
     display: flex;
+    cursor: pointer;
     justify-content: space-between;
     align-items: center;
     transition: background-color 0.2s linear;
 }
 
-.fa-moon{ color: white; }
-.fa-sun{ color: rgb(255, 255, 132); }
+
+.fa-moon{ 
+    color: white;
+    font-size: 14px; 
+    position: relative; 
+    top: 50%; 
+    transform: translateY(-50%); 
+}
+
+.fa-sun{ 
+    color: rgb(255, 255, 132); 
+    font-size: 14px; 
+    position: relative; 
+    top: 50%; 
+    transform: translateY(-50%); 
+}
 
 .daynight-checkbox-label .daynight-ball{
     background-color: aqua;
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     position: absolute;
-    left: 2px;
-    top: 2px;
+    left: 4px;
+    top: 3px;
     border-radius: 50%;
     transition: transform 0.2s linear;
     
@@ -39,7 +59,7 @@
 
 .daynight-checkbox:checked + .daynight-checkbox-label .daynight-ball{
     background-color: rgb(16, 21, 21);
-    transform: translateX(24px);
+    transform: translateX(22px);
 }
 
 .daynight-checkbox:checked + .daynight-checkbox-label { 
@@ -48,3 +68,4 @@
 }
 
 #daynight-checkbox{ display: none; }
+
