@@ -5,9 +5,9 @@ from app import app, db
 from app.models import Driver, Event
 
 @app.route('/')
-@app.route('/index')
-def my_index():
-    return render_template('index.html', title='Home')
+@app.route('/home')
+def my_home():
+    return render_template('home.html', title='Home')
 
 @app.route('/about')
 def my_about():
