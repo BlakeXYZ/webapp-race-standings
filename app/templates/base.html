@@ -2,7 +2,7 @@
 <html lang="en" id="base-html">
     <head>
 
-        <script defer src="{{ url_for('static', filename='js/theme-toggle.js') }}"></script>
+
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,6 +11,9 @@
         {% else %}
         <title>{{ ('webapp-race-standings') }}</title>
         {% endif %}
+
+        <!-- Theme Toggle JS, called first to fix FOUC -->
+        <script defer src="{{ url_for('static', filename='js/theme-toggle.js') }}"></script>
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -35,41 +38,11 @@
     <body>
     <div class="container">
 
-        <div>
-            <br>
-            <a href="{{ url_for('my_index') }}">Home</a>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{{ url_for('my_about') }}">About</a>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-  
-            <!-- TODO: menu dynamically displays only latest year/season -->
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                2024 Season
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                {% for event in events %}
-                    <li><a class="dropdown-item" href="{{ url_for('event', year=event.event_date.strftime('%Y'), event_id=event.id)  }}"> {{ event.event_date.strftime('%b') }}.  {{ event.event_date.strftime('%d') }} Event</a></li>
-                {% endfor %}     
-            </ul>
-            
-            <input type="checkbox" class="daynight-checkbox" id="daynight-checkbox">
-            <label for="daynight-checkbox" class="daynight-checkbox-label">
-                <i class="fas fa-moon"></i>
-                <i class="fas fa-sun"></i>
-                <span class="daynight-ball"></span>
-            </label>
-
-
-        </div>
-
-        <p> 
-
-        </p>
-
+        {% include 'navbar_02.html' %}
 
         <hr>
-        {% block content %}{% endblock %}
 
+        {% block content %}{% endblock %}
 
     </div>
 

@@ -1,0 +1,26 @@
+<div>
+    <br>
+    <a href="{{ url_for('my_index') }}">Home</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{{ url_for('my_about') }}">About</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+
+    <!-- TODO: menu dynamically displays only latest year/season -->
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        2024 Season
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        {% for event in events %}
+            <li><a class="dropdown-item" href="{{ url_for('event', year=event.event_date.strftime('%Y'), event_id=event.id)  }}"> {{ event.event_date.strftime('%b') }}.  {{ event.event_date.strftime('%d') }} Event</a></li>
+        {% endfor %}     
+    </ul>
+    
+    <input type="checkbox" class="daynight-checkbox" id="daynight-checkbox">
+    <label for="daynight-checkbox" class="daynight-checkbox-label">
+        <i class="fas fa-moon"></i>
+        <i class="fas fa-sun"></i>
+        <span class="daynight-ball"></span>
+    </label>
+
+
+</div>
