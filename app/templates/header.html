@@ -16,7 +16,6 @@
 
         <a class="nav-link {% if request.endpoint == 'my_home' %}active{% endif %}" aria-current="{% if request.endpoint == 'my_home' %}page{% endif %}" href="{{ url_for('my_home') }}">Home</a>
         <a class="nav-link {% if request.endpoint == 'my_about' %}active{% endif %}" aria-current="{% if request.endpoint == 'my_about' %}page{% endif %}" href="{{ url_for('my_about') }}">About</a>
-        <a class="nav-link {% if request.endpoint == 'my_style_guide' %}active{% endif %}" aria-current="{% if request.endpoint == 'my_style_guide' %}page{% endif %}" href="{{ url_for('my_style_guide') }}">Style Guide</a>
 
 
         <!-- TODO: menu dynamically displays only latest year/season -->
@@ -31,6 +30,8 @@
             </ul>
         </li>
         
+        <a class="nav-link {% if request.endpoint == 'my_style_guide' %}active{% endif %}" aria-current="{% if request.endpoint == 'my_style_guide' %}page{% endif %}" href="{{ url_for('my_style_guide') }}">Style Guide</a>
+
       </div>
 
 
