@@ -15,7 +15,7 @@
 }
 
 .daynight-checkbox-label{
-    background-color: #ada7ff;
+    background-color: #c7c3ff;
     width: 48px;
     height: 24px;
     border-radius: 50px;
@@ -46,7 +46,7 @@
 }
 
 .daynight-checkbox-label .daynight-ball{
-    background-color: aqua;
+    background-color: rgb(194, 255, 255);
     width: 18px;
     height: 18px;
     position: absolute;
