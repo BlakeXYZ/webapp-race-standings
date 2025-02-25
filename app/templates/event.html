@@ -4,15 +4,8 @@
 
     <h2>{{ event.event_name }}</h2>
     <h5>{{ event.event_date.strftime('%A') }}. {{ event.event_date.strftime('%B') }} {{ event.event_date.strftime('%d')}}, {{ event.event_date.strftime('%Y') }}</h5>
-    
-    <br>
-
-    <!-- TODO: Test bootstrap-table in its own env -->
-    <!-- https://bootstrap-table.com/versions/1.15.5/docs/getting-started/introduction/ -->
-
 
     <table class="my-event-bootstrap-table">
-
         <thead>
             <tr>
                 <th data-field="my-driver" data-sortable="true">Driver</th>
