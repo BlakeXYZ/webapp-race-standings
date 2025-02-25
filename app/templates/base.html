@@ -32,17 +32,20 @@
         <script defer src="{{ url_for('static', filename='js/my-bootstrap-tables.js') }}"></script>
     </head>
 
-    <body>
-    <div class="container">
 
+
+    <body>
+    {% include 'header.html' %}
+
+    <div class="container content-container">
         <div class="content">
-            {% include 'header.html' %}
             <hr>
             {% block content %}{% endblock %}
         </div>
-
-        {% include 'footer.html' %}
-        
     </div>
+
+    {% include 'footer.html' %}
     </body>
+
+
 </html>

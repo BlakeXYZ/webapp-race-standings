@@ -4,7 +4,7 @@ html, body {
     height: 100%;
     margin: 0;
 }
-.container {
+.content-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -12,3 +12,9 @@ html, body {
 .content {
     flex: 1;
 }
+
+/* Footer styling */
+.footer {
+    margin-top: 200px;
+}
+
