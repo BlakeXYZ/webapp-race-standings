@@ -71,8 +71,8 @@ class Event(db.Model):
     id:             so.Mapped[int] = so.mapped_column(primary_key=True)
     event_name:     so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     event_date:     so.Mapped[datetime.date] = so.mapped_column(sa.Date, index=True)
-    season_id:      so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('season.id'), index=True)
-    event_type_id:  so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('event_type.id'), index=True)
+    season_id:      so.Mapped[int] = so.mapped_column(sa.ForeignKey('season.id'), index=True)
+    event_type_id:  so.Mapped[int] = so.mapped_column(sa.ForeignKey('event_type.id'), index=True)
 
     season:         so.Mapped["Season"] = so.relationship("Season", back_populates="events")
     event_type:     so.Mapped["EventType"] = so.relationship("EventType", back_populates="events")
