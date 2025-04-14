@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app import app, db
 from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
-from app.db_commit_helpers import add_driverEvent, add_laptime
+from app.db_commit_helpers import add_driverEvent, add_laptime, add_event
 from config import Config
 
 class TestConfig(Config):
@@ -147,13 +147,31 @@ class DriverEventModelCase(unittest.TestCase):
             print(f"Error: {e}")
             db.session.rollback()
 
+    def test_add_event(self):
+        print(f"UNITTEST - Running test_add_event ------------------------ ")
+        event_name = 'Grand Prix'
+        event_date = datetime.date(2024, 1, 1)
+        event_type_name = 'Practice Event'
+        season_name = '2024 Season'
+        add_event(db.session, event_name, event_date, season_name, event_type_name)
 
+        try:
+            db.session.commit()
+            events = db.session.query(Event).all()
+            print(f"Printing all events: {events}")
+        except Exception as e:
+            print(f"Error: {e}")
+            db.session.rollback()
+
+        except IntegrityError as e:
+            print(f"Error: {e}")
+            db.session.rollback()
 
 
 if __name__ == '__main__':
     # unittest.main(verbosity=2)
 
     suite = unittest.TestSuite()
-    suite.addTest(DriverEventModelCase('test_add_driverEvent'))
+    suite.addTest(DriverEventModelCase('test_add_event'))
     runner = unittest.TextTestRunner()
     runner.run(suite)

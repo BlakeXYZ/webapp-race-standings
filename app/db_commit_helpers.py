@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
+from app.models import Season, EventType, Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
 
 #TODO: Reasearch clean CRUD operations for backend automation.
 #TODO: How to interact with ingestion of data?
@@ -77,11 +77,30 @@ def add_item(db_session, model, **kwargs):
     db_session.add(item)
     return item
 
+def add_season(db_session, season_name: str, start_date: datetime.date, end_date: datetime.date):
+    return add_item(db_session, Season, season_name=season_name, start_date=start_date, end_date=end_date)
+
+def add_event_type(db_session, event_type_name: str):
+    return add_item(db_session, EventType, event_type_name=event_type_name)
+
 def add_driver(db_session, driver_name: str):
     return add_item(db_session, Driver, driver_name=driver_name)
 
-def add_event(db_session, event_name: str, event_date: datetime.date):
-    return add_item(db_session, Event, event_name=event_name, event_date=event_date)
+def add_event(db_session, event_name: str, event_date: datetime.date, season_name: str, event_type_name: str):
+    season = db_session.query(Season).filter_by(season_name=season_name).first()
+    event_type = db_session.query(EventType).filter_by(event_type_name=event_type_name).first()
+
+    if season is None:
+        season = add_season(db_session, season_name, start_date=event_date, end_date=event_date)
+
+    if event_type is None:
+        event_type = add_event_type(db_session, event_type_name)
+        
+
+    if season and event_type:
+        return add_item(db_session, Event, event_name=event_name, event_date=event_date, season=season, event_type=event_type)
+    else:
+        return None
 
 def add_car(db_session, car_name: str, car_class: str):
     return add_item(db_session, Car, car_name=car_name, car_class=car_class)
@@ -95,7 +114,7 @@ def add_driverEvent(db_session, driver_name: str, event_name: str, event_date: d
         driver = add_driver(db_session, driver_name)
 
     if event is None:
-        event = add_event(db_session, event_name, event_date)
+        raise ValueError(f"Event with name: '{event_name}' and date: '{event_date}' does not exist! Please add the event first.")
 
     if car is None:
         car = add_car(db_session, car_name, car_class)

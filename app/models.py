@@ -23,6 +23,9 @@ class Season(db.Model):
 
     events: so.Mapped[list["Event"]] = so.relationship("Event", back_populates="season")
 
+    def __repr__(self):
+        return f'<Season {self.season_name} {self.start_date} {self.end_date}>'
+
 
 class EventType(db.Model):
     """
@@ -36,7 +39,7 @@ class EventType(db.Model):
     events: so.Mapped[list["Event"]] = so.relationship("Event", back_populates="event_type")
 
     def __repr__(self):
-        return '<EventType {}>'.format(self.event_type_name)
+        return f'<EventType {self.event_type_name}>'
 
 #region Driver, Event, Car Branch
 class Driver(db.Model):
@@ -54,7 +57,7 @@ class Driver(db.Model):
     driver_events:  so.Mapped[list["DriverEvent"]] = so.relationship("DriverEvent", back_populates="driver")
 
     def __repr__(self):
-        return '<Driver {}>'.format(self.driver_name)
+        return f'<Driver {self.driver_name}>'
     
     def get_slug(self):
         return slugify(self.driver_name)
@@ -78,9 +81,9 @@ class Event(db.Model):
     event_type:     so.Mapped["EventType"] = so.relationship("EventType", back_populates="events")
     
     driver_events:  so.Mapped[list["DriverEvent"]] = so.relationship("DriverEvent", back_populates="event")
-
+    
     def __repr__(self):
-        return '<Event {}>'.format(self.event_name)
+        return f'<Event: {self.event_name} {self.season} {self.event_type}>'
     
 class Car(db.Model):
     """
@@ -100,7 +103,7 @@ class Car(db.Model):
     driver_events: so.Mapped[list["DriverEvent"]] = so.relationship("DriverEvent", back_populates="car")
 
     def __repr__(self):
-        return '<Car name={}, class={}>'.format(self.car_name, self.car_class)
+        return f'<Car name={self.car_name}, class={self.car_class}>'
 #endregion
 
 #region DriverEvent Branch   
@@ -152,8 +155,7 @@ class DriverEventStats(db.Model):
     driver_event:       so.Mapped["DriverEvent"] = so.relationship("DriverEvent", back_populates="driver_event_stats")
 
     def __repr__(self):
-        return '<DriverEventStats fastest_lap={} average_lap={} total_laps={}>'.format(
-            self.fastest_lap, self.average_lap, self.total_laps)
+        return f'<DriverEventStats fastest_lap={self.fastest_lap} average_lap={self.average_lap} total_laps={self.total_laps}>'
 
 class Laptime(db.Model):
     """
@@ -173,7 +175,7 @@ class Laptime(db.Model):
     driver_event:       so.Mapped["DriverEvent"] = so.relationship("DriverEvent", back_populates="laptimes")
 
     def __repr__(self):
-        return '<Laptime run={} time={}>'.format(self.run_number, self.laptime)
+        return f'<Laptime run={self.run_number} time={self.laptime}>'
 #endregion
 
 
