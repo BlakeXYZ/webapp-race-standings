@@ -9,14 +9,29 @@ from app import db
 #TODO find alternative to datetime? outdated? datetime2 perhaps?
 
 
+class Season(db.Model):
+    """
+    example season add to db:
+
+    new_season = Season(season_name='2024, start_date=date(2024, 4, 1), end_date=date(2024, 12, 31))
+    db.session.add(new_season)
+    """
+    id:             so.Mapped[int] = so.mapped_column(primary_key=True)
+    season_name:    so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
+    start_date:     so.Mapped[datetime.date] = so.mapped_column(sa.Date, index=True)
+    end_date:       so.Mapped[datetime.date] = so.mapped_column(sa.Date, index=True)
+
+    events: so.Mapped[list["Event"]] = so.relationship("Event", back_populates="season")
+
+
 class EventType(db.Model):
     """
     example event_type add to db:
 
     new_event_type = EventType(event_type_name='Rally')
     """
-    id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    event_type_name: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
+    id:                 so.Mapped[int] = so.mapped_column(primary_key=True)
+    event_type_name:    so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
 
     events: so.Mapped[list["Event"]] = so.relationship("Event", back_populates="event_type")
 
@@ -33,10 +48,10 @@ class Driver(db.Model):
     db.session.commit()
     
     """
-    id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    driver_name: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
+    id:             so.Mapped[int] = so.mapped_column(primary_key=True)
+    driver_name:    so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
 
-    driver_events: so.Mapped[list["DriverEvent"]] = so.relationship("DriverEvent", back_populates="driver")
+    driver_events:  so.Mapped[list["DriverEvent"]] = so.relationship("DriverEvent", back_populates="driver")
 
     def __repr__(self):
         return '<Driver {}>'.format(self.driver_name)
@@ -53,14 +68,16 @@ class Event(db.Model):
     db.session.add(new_event)
     db.session.commit()
     """
-    id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    event_name: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
-    event_date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, index=True)
-    event_type_id: so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('event_type.id'), index=True)
+    id:             so.Mapped[int] = so.mapped_column(primary_key=True)
+    event_name:     so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
+    event_date:     so.Mapped[datetime.date] = so.mapped_column(sa.Date, index=True)
+    season_id:      so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('season.id'), index=True)
+    event_type_id:  so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('event_type.id'), index=True)
 
-    event_type: so.Mapped["EventType"] = so.relationship("EventType", backref="events")
-
-    driver_events: so.Mapped[list["DriverEvent"]] = so.relationship("DriverEvent", back_populates="event")
+    season:         so.Mapped["Season"] = so.relationship("Season", back_populates="events")
+    event_type:     so.Mapped["EventType"] = so.relationship("EventType", back_populates="events")
+    
+    driver_events:  so.Mapped[list["DriverEvent"]] = so.relationship("DriverEvent", back_populates="event")
 
     def __repr__(self):
         return '<Event {}>'.format(self.event_name)
@@ -132,7 +149,7 @@ class DriverEventStats(db.Model):
     average_lap:        so.Mapped[Optional[datetime.timedelta]] = so.mapped_column(sa.Interval)
     total_laps:         so.Mapped[int] = so.mapped_column(sa.Integer, index=True)
 
-    driver_event: so.Mapped["DriverEvent"] = so.relationship("DriverEvent", back_populates="driver_event_stats")
+    driver_event:       so.Mapped["DriverEvent"] = so.relationship("DriverEvent", back_populates="driver_event_stats")
 
     def __repr__(self):
         return '<DriverEventStats fastest_lap={} average_lap={} total_laps={}>'.format(
@@ -157,4 +174,25 @@ class Laptime(db.Model):
 
     def __repr__(self):
         return '<Laptime run={} time={}>'.format(self.run_number, self.laptime)
+#endregion
+
+
+#region DriverSeasonStats Branch
+class DriverSeasonStats(db.Model):
+    """
+    example driver_season_stats add to db:
+
+    new_driver_season_stats = DriverSeasonStats(driver_id=1, season_id=1)
+    """
+
+    id:             so.Mapped[int] = so.mapped_column(primary_key=True)
+    driver_id:      so.Mapped[int] = so.mapped_column(sa.ForeignKey('driver.id'), index=True)
+    season_id:      so.Mapped[int] = so.mapped_column(sa.ForeignKey('season.id'), index=True)
+
+    total_events:   so.Mapped[int] = so.mapped_column(sa.Integer, index=True)
+    total_points:   so.Mapped[int] = so.mapped_column(sa.Integer, index=True)
+ 
+
+
+
 #endregion

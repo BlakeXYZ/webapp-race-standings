@@ -1,8 +1,8 @@
-"""initial migration
+"""init
 
-Revision ID: 50f534c2deb4
+Revision ID: 56de901ec411
 Revises: 
-Create Date: 2025-04-13 19:44:38.292407
+Create Date: 2025-04-13 20:16:30.204019
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '50f534c2deb4'
+revision = '56de901ec411'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -45,18 +45,47 @@ def upgrade():
     with op.batch_alter_table('event_type', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_event_type_event_type_name'), ['event_type_name'], unique=True)
 
+    op.create_table('season',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('season_name', sa.String(length=64), nullable=False),
+    sa.Column('start_date', sa.Date(), nullable=False),
+    sa.Column('end_date', sa.Date(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('season', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_season_end_date'), ['end_date'], unique=False)
+        batch_op.create_index(batch_op.f('ix_season_season_name'), ['season_name'], unique=True)
+        batch_op.create_index(batch_op.f('ix_season_start_date'), ['start_date'], unique=False)
+
+    op.create_table('driver_season_stats',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('driver_id', sa.Integer(), nullable=False),
+    sa.Column('season_id', sa.Integer(), nullable=False),
+    sa.Column('total_events', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['driver_id'], ['driver.id'], ),
+    sa.ForeignKeyConstraint(['season_id'], ['season.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('driver_season_stats', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_driver_season_stats_driver_id'), ['driver_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_driver_season_stats_season_id'), ['season_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_driver_season_stats_total_events'), ['total_events'], unique=False)
+
     op.create_table('event',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('event_name', sa.String(length=64), nullable=False),
     sa.Column('event_date', sa.Date(), nullable=False),
+    sa.Column('season_id', sa.Integer(), nullable=True),
     sa.Column('event_type_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['event_type_id'], ['event_type.id'], ),
+    sa.ForeignKeyConstraint(['season_id'], ['season.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('event', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_event_event_date'), ['event_date'], unique=False)
         batch_op.create_index(batch_op.f('ix_event_event_name'), ['event_name'], unique=True)
         batch_op.create_index(batch_op.f('ix_event_event_type_id'), ['event_type_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_event_season_id'), ['season_id'], unique=False)
 
     op.create_table('driver_event',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -119,11 +148,24 @@ def downgrade():
 
     op.drop_table('driver_event')
     with op.batch_alter_table('event', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_event_season_id'))
         batch_op.drop_index(batch_op.f('ix_event_event_type_id'))
         batch_op.drop_index(batch_op.f('ix_event_event_name'))
         batch_op.drop_index(batch_op.f('ix_event_event_date'))
 
     op.drop_table('event')
+    with op.batch_alter_table('driver_season_stats', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_driver_season_stats_total_events'))
+        batch_op.drop_index(batch_op.f('ix_driver_season_stats_season_id'))
+        batch_op.drop_index(batch_op.f('ix_driver_season_stats_driver_id'))
+
+    op.drop_table('driver_season_stats')
+    with op.batch_alter_table('season', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_season_start_date'))
+        batch_op.drop_index(batch_op.f('ix_season_season_name'))
+        batch_op.drop_index(batch_op.f('ix_season_end_date'))
+
+    op.drop_table('season')
     with op.batch_alter_table('event_type', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_event_type_event_type_name'))
 
