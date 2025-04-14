@@ -86,19 +86,18 @@ def add_event_type(db_session, event_type_name: str):
 def add_driver(db_session, driver_name: str):
     return add_item(db_session, Driver, driver_name=driver_name)
 
-def add_event(db_session, event_name: str, event_date: datetime.date, season_name: str, event_type_name: str):
-    season = db_session.query(Season).filter_by(season_name=season_name).first()
+def add_event(db_session, event_name: str, event_date: datetime.date, event_type_name: str, season_name: str):
     event_type = db_session.query(EventType).filter_by(event_type_name=event_type_name).first()
+    season = db_session.query(Season).filter_by(season_name=season_name).first()
+
+    if event_type is None:
+        event_type = add_event_type(db_session, event_type_name)
 
     if season is None:
         season = add_season(db_session, season_name, start_date=event_date, end_date=event_date)
 
-    if event_type is None:
-        event_type = add_event_type(db_session, event_type_name)
-        
-
-    if season and event_type:
-        return add_item(db_session, Event, event_name=event_name, event_date=event_date, season=season, event_type=event_type)
+    if event_type and season:
+        return add_item(db_session, Event, event_name=event_name, event_date=event_date, event_type=event_type, season=season)
     else:
         return None
 

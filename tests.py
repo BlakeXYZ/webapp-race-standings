@@ -153,7 +153,7 @@ class DriverEventModelCase(unittest.TestCase):
         event_date = datetime.date(2024, 1, 1)
         event_type_name = 'Practice Event'
         season_name = '2024 Season'
-        add_event(db.session, event_name, event_date, season_name, event_type_name)
+        add_event(db.session, event_name, event_date, event_type_name, season_name)
 
         try:
             db.session.commit()
