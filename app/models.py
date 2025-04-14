@@ -1,3 +1,4 @@
+from asyncio import events
 from typing import Optional
 import datetime 
 import sqlalchemy as sa
@@ -7,6 +8,22 @@ from app import db
 
 #TODO find alternative to datetime? outdated? datetime2 perhaps?
 
+
+class EventType(db.Model):
+    """
+    example event_type add to db:
+
+    new_event_type = EventType(event_type_name='Rally')
+    """
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    event_type_name: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
+
+    events: so.Mapped[list["Event"]] = so.relationship("Event", back_populates="event_type")
+
+    def __repr__(self):
+        return '<EventType {}>'.format(self.event_type_name)
+
+#region Driver, Event, Car Branch
 class Driver(db.Model):
     """
     example driver add to db:
@@ -26,6 +43,7 @@ class Driver(db.Model):
     
     def get_slug(self):
         return slugify(self.driver_name)
+    
 
 class Event(db.Model):
     """
@@ -38,6 +56,9 @@ class Event(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     event_name: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     event_date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, index=True)
+    event_type_id: so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('event_type.id'), index=True)
+
+    event_type: so.Mapped["EventType"] = so.relationship("EventType", backref="events")
 
     driver_events: so.Mapped[list["DriverEvent"]] = so.relationship("DriverEvent", back_populates="event")
 
@@ -63,7 +84,9 @@ class Car(db.Model):
 
     def __repr__(self):
         return '<Car name={}, class={}>'.format(self.car_name, self.car_class)
-    
+#endregion
+
+#region DriverEvent Branch   
 class DriverEvent(db.Model):
     """
     Association table to link drivers to events with unique cars and classes.
@@ -134,4 +157,4 @@ class Laptime(db.Model):
 
     def __repr__(self):
         return '<Laptime run={} time={}>'.format(self.run_number, self.laptime)
-    
+#endregion

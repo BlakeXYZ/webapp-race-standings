@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: 3c9def68d87e
-Revises: 8751366afa5e
-Create Date: 2025-02-17 21:35:59.275412
+Revision ID: 50f534c2deb4
+Revises: 
+Create Date: 2025-04-13 19:44:38.292407
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '3c9def68d87e'
-down_revision = '8751366afa5e'
+revision = '50f534c2deb4'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -37,15 +37,26 @@ def upgrade():
     with op.batch_alter_table('driver', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_driver_driver_name'), ['driver_name'], unique=True)
 
+    op.create_table('event_type',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('event_type_name', sa.String(length=64), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('event_type', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_event_type_event_type_name'), ['event_type_name'], unique=True)
+
     op.create_table('event',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('event_name', sa.String(length=64), nullable=False),
     sa.Column('event_date', sa.Date(), nullable=False),
+    sa.Column('event_type_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['event_type_id'], ['event_type.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('event', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_event_event_date'), ['event_date'], unique=False)
         batch_op.create_index(batch_op.f('ix_event_event_name'), ['event_name'], unique=True)
+        batch_op.create_index(batch_op.f('ix_event_event_type_id'), ['event_type_id'], unique=False)
 
     op.create_table('driver_event',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -108,10 +119,15 @@ def downgrade():
 
     op.drop_table('driver_event')
     with op.batch_alter_table('event', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_event_event_type_id'))
         batch_op.drop_index(batch_op.f('ix_event_event_name'))
         batch_op.drop_index(batch_op.f('ix_event_event_date'))
 
     op.drop_table('event')
+    with op.batch_alter_table('event_type', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_event_type_event_type_name'))
+
+    op.drop_table('event_type')
     with op.batch_alter_table('driver', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_driver_driver_name'))
 
