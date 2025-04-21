@@ -43,3 +43,6 @@ class DriverEventFactory(factory.alchemy.SQLAlchemyModelFactory):
     driver = factory.SubFactory(DriverFactory)  # Generates a related Driver instance
     event = factory.SubFactory(EventFactory)    # Generates a related Event instance
     car = factory.SubFactory(CarFactory)        # Generates a related Car instance
+
+
+    

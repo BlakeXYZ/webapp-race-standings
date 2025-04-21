@@ -4,6 +4,11 @@
 
     <h2>{{ event.event_name }}</h2>
     <h5>{{ event.event_date.strftime('%A') }}. {{ event.event_date.strftime('%B') }} {{ event.event_date.strftime('%d')}}, {{ event.event_date.strftime('%Y') }}</h5>
+    
+    <button class="btn btn-primary" type="button" onclick="toggleColumn('laptimes-column')">
+        Toggle Laptimes
+    </button>
+
 
     <table class="my-event-bootstrap-table">
         <thead>
@@ -11,7 +16,14 @@
                 <th data-field="my-driver" data-sortable="true">Driver</th>
                 <th data-field="my-car" data-sortable="true">Car</th>
                 <th data-sortable="true">Car Class</th>
-                <th data-sortable="true">Laptimes</th>
+
+                <th data-sortable="true">Avg Time</th>
+                <th data-sortable="true">Best Lap</th>
+                <th data-sortable="true">Total Laps</th>
+
+                {% for i in range(event_max_laps) %}
+                <th class="laptimes-column" data-sortable="true">Lap {{ i + 1 }}</th>
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
@@ -20,11 +32,22 @@
                 <td><a href="{{ url_for('driver', driver_id=driver_event.driver.id, slug=driver_event.driver.get_slug()) }}">{{ driver_event.driver.driver_name }}</a></td>
                 <td>{{ driver_event.car.car_name }}</td>
                 <td>{{ driver_event.car.car_class }}</td>
-                <td>{{ driver_event.laptimes }}</td>
+                
+                <td>{{ driver_event.driver_event_stats.average_lap }}</td>
+                <td>{{ driver_event.driver_event_stats.fastest_lap }}</td>
+                <td>{{ driver_event.driver_event_stats.total_laps }}/{{ event_max_laps }}</td>
+
+                {% for laptime in driver_event.laptimes %}
+                <td class="laptimes-column">{{ laptime.laptime }}</td>
+                {% endfor %}
             </tr>
+            
             {% endfor %}
         </tbody>
     </table>
+
+
+
 
 
 {% endblock %}

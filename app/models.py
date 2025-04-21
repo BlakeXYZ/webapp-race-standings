@@ -145,7 +145,7 @@ class DriverEvent(db.Model):
     car:        so.Mapped["Car"] = so.relationship("Car", back_populates="driver_events")
 
     laptimes:           so.Mapped[list["Laptime"]] = so.relationship("Laptime", back_populates="driver_event")
-    driver_event_stats: so.Mapped[list["DriverEventStats"]] = so.relationship("DriverEventStats", back_populates="driver_event")
+    driver_event_stats: so.Mapped[Optional["DriverEventStats"]] = so.relationship("DriverEventStats", back_populates="driver_event")
 
     def __repr__(self):
         return f"<DriverEvent {self.driver}, {self.event}, {self.car}, {self.driver_event_stats}, {self.laptimes}>"
