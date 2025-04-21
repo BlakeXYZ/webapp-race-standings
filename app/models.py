@@ -3,6 +3,7 @@ from typing import Optional
 import datetime 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from sqlalchemy.orm import validates
 from slugify import slugify  
 from app import db
 
@@ -25,7 +26,6 @@ class Season(db.Model):
 
     def __repr__(self):
         return f'<Season {self.season_name} {self.start_date} {self.end_date}>'
-
 
 class EventType(db.Model):
     """
@@ -62,7 +62,6 @@ class Driver(db.Model):
     def get_slug(self):
         return slugify(self.driver_name)
     
-
 class Event(db.Model):
     """
     example event add to db:
@@ -71,6 +70,7 @@ class Event(db.Model):
     db.session.add(new_event)
     db.session.commit()
     """
+
     id:             so.Mapped[int] = so.mapped_column(primary_key=True)
     event_name:     so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     event_date:     so.Mapped[datetime.date] = so.mapped_column(sa.Date, index=True)
@@ -81,7 +81,23 @@ class Event(db.Model):
     season:         so.Mapped["Season"] = so.relationship("Season", back_populates="events")
     
     driver_events:  so.Mapped[list["DriverEvent"]] = so.relationship("DriverEvent", back_populates="event")
-    
+
+    # init method to auto assign season_id based on Event's event_date
+    def __init__(self, event_name, event_date, event_type_id, **kwargs):
+        super().__init__(**kwargs)
+        self.event_name = event_name
+        self.event_date = event_date
+        self.event_type_id = event_type_id
+
+        # Automatically assign season_id based on event_date
+        season = Season.query.filter(
+            Season.start_date <= event_date,
+            Season.end_date >= event_date
+        ).first()
+        if not season:
+            raise ValueError(f"No season found for event_date {event_date}.")
+        self.season_id = season.id
+
     def __repr__(self):
         return f'<Event: {self.event_name} {self.event_type} {self.season}>'
     

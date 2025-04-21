@@ -27,16 +27,5 @@ if not app.debug:
     app.logger.info('Microblog startup')
 
 
-from app import routes, models, errors
-from app.models import Driver, Event
+from app import routes, models, errors, context_globals  
 
-#TODO: Find better home for global variables and init functions
-#TODO: Setup Nav Bar Drop Down menus: Current Season DropDown + Archived Seasons DropDown
-@app.context_processor
-def inject_globals():
-    drivers = db.session.scalars(sa.select(Driver)).all()
-    events = db.session.scalars(sa.select(Event)).all()
-    return {
-        'drivers': drivers,
-        'events': events
-    }

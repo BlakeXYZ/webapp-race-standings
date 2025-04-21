@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) # So we can import app
+
 import datetime
 import unittest
 import sqlalchemy as sa
@@ -5,9 +9,11 @@ import sqlalchemy.orm as so
 from sqlalchemy.exc import IntegrityError
 
 from app import app, db
-from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime
+from app.models import Driver, Event, Car, DriverEvent, DriverEventStats, Laptime, EventType, Season
 from app.db_commit_helpers import add_driverEvent, add_laptime, add_event
 from config import Config
+
+from seed_db import seed_db
 
 class TestConfig(Config):
     TESTING = True
@@ -167,11 +173,33 @@ class DriverEventModelCase(unittest.TestCase):
             print(f"Error: {e}")
             db.session.rollback()
 
+    def test_seed_db(self):
+        print(f"UNITTEST - Running test_seed_db ------------------------ ")
+        seed_db()
+
+        try:
+            db.session.commit()
+            seasons = db.session.query(Season).all()
+            event_types = db.session.query(EventType).all()
+            drivers = db.session.query(Driver).all()
+            events = db.session.query(Event).all()
+            print(f"Printing all seasons: {seasons}")
+            print(f"Printing all event types: {event_types}")
+            print(f"Printing all drivers: {drivers}")
+            print(f"Printing all events: {events}")
+
+        except Exception as e:
+            print(f"Error: {e}")
+            db.session.rollback()
+
+        except IntegrityError as e:
+            print(f"Error: {e}")
+            db.session.rollback()
 
 if __name__ == '__main__':
     # unittest.main(verbosity=2)
 
     suite = unittest.TestSuite()
-    suite.addTest(DriverEventModelCase('test_add_event'))
+    suite.addTest(DriverEventModelCase('test_seed_db'))
     runner = unittest.TextTestRunner()
     runner.run(suite)
