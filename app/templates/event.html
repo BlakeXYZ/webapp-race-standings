@@ -13,7 +13,7 @@
     <table class="my-event-bootstrap-table">
         <thead>
             <tr>
-                <th data-field="my-driver" data-sortable="true">Driver</th>
+                <th data-field="my-driver" data-sortable="true" class="sticky-col">Driver</th>
                 <th data-field="my-car" data-sortable="true">Car</th>
                 <th data-sortable="true">Car Class</th>
 
@@ -29,7 +29,7 @@
         <tbody>
             {% for driver_event in event.driver_events %}
             <tr>
-                <td><a href="{{ url_for('driver', driver_id=driver_event.driver.id, slug=driver_event.driver.get_slug()) }}">{{ driver_event.driver.driver_name }}</a></td>
+                <td class="sticky-col"><a href="{{ url_for('driver', driver_id=driver_event.driver.id, slug=driver_event.driver.get_slug()) }}">{{ driver_event.driver.driver_name }}</a></td>
                 <td>{{ driver_event.car.car_name }}</td>
                 <td>{{ driver_event.car.car_class }}</td>
                 
