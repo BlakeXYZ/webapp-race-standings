@@ -125,7 +125,7 @@ def add_driverEvent(db_session, driver_name: str, event_name: str, event_date: d
 
 
 # #TODO how best to query info for laptime add? How to associate driver_event_id during DB Update?
-def add_laptime(db_session, driver_event_id: int, laptime: datetime.timedelta):
+def add_laptime(db_session, driver_event_id: int, laptime: float):
 
     driver_event = db_session.query(DriverEvent).filter_by(id=driver_event_id).first()
     if driver_event is None:
@@ -148,8 +148,8 @@ def _update_or_create_driverEventStats(db_session, my_laptime: Laptime):
     laptimes = db.session.query(Laptime).filter_by(driver_event=my_laptime.driver_event).all()
     this_laps_driverEventStats = db.session.query(DriverEventStats).filter_by(driver_event=my_laptime.driver_event).first()
     total_runs = len(laptimes)
-    total_time = sum((lt.laptime for lt in laptimes), datetime.timedelta())
-    avg_laptime = total_time / total_runs if total_runs > 1 else total_time
+    total_time = round(sum(lt.laptime for lt in laptimes), 2)
+    avg_laptime = round(total_time / total_runs, 2) if total_runs > 1 else total_time
     min_laptime = min((lt.laptime for lt in laptimes), default=None)
     max_laptime = max((lt.laptime for lt in laptimes), default=None)
 
@@ -161,7 +161,15 @@ def _update_or_create_driverEventStats(db_session, my_laptime: Laptime):
     if this_laps_driverEventStats is None:
         print(f"Creating new DriverEventStats for {my_laptime.driver_event} -------")
         
-        return add_item(db_session, DriverEventStats, driver_event_id=my_laptime.driver_event.id, fastest_lap=min_laptime, average_lap=avg_laptime, total_laps=total_runs)
+        return add_item(db_session,
+                        DriverEventStats,
+                        driver_event_id=my_laptime.driver_event.id,
+                        fastest_lap=min_laptime,
+                        average_lap=avg_laptime,
+                        total_laps=total_runs,
+                        raw_time=total_time,
+                        total_time=total_time
+                    )
 
     if this_laps_driverEventStats:
 
@@ -172,6 +180,8 @@ def _update_or_create_driverEventStats(db_session, my_laptime: Laptime):
         this_laps_driverEventStats.total_laps = total_runs
         this_laps_driverEventStats.fastest_lap = min_laptime
         this_laps_driverEventStats.average_lap = avg_laptime
+        this_laps_driverEventStats.raw_time = total_time
+        this_laps_driverEventStats.total_time = total_time
         
 
         print(f"total laps after update: {this_laps_driverEventStats.total_laps}")

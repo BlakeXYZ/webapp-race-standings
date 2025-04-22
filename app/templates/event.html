@@ -13,13 +13,15 @@
     <table class="my-event-bootstrap-table">
         <thead>
             <tr>
-                <th data-field="my-driver" data-sortable="true" class="sticky-col">Driver</th>
-                <th data-field="my-car" data-sortable="true">Car</th>
+                <th data-field="my-driver" data-sortable="true" class="sticky-col table-fixed-width">Driver</th>
+                <th data-field="my-car" data-sortable="true" class="table-fixed-width-sm">Car</th>
                 <th data-sortable="true">Car Class</th>
 
                 <th data-sortable="true">Avg Time</th>
                 <th data-sortable="true">Best Lap</th>
                 <th data-sortable="true">Total Laps</th>
+                <th data-sortable="true">Raw Time</th>
+                <th data-sortable="true">Total Time</th>
 
                 {% for i in range(event_max_laps) %}
                 <th class="laptimes-column" data-sortable="true">Lap {{ i + 1 }}</th>
@@ -36,6 +38,8 @@
                 <td>{{ driver_event.driver_event_stats.average_lap }}</td>
                 <td>{{ driver_event.driver_event_stats.fastest_lap }}</td>
                 <td>{{ driver_event.driver_event_stats.total_laps }}/{{ event_max_laps }}</td>
+                <td>{{ driver_event.driver_event_stats.raw_time }}</td>
+                <td>{{ driver_event.driver_event_stats.total_time }}</td>
 
                 {% for laptime in driver_event.laptimes %}
                 <td class="laptimes-column">{{ laptime.laptime }}</td>

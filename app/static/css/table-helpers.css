@@ -1,5 +1,23 @@
 .sticky-col {
-    position: sticky;
-    left: 0;
-    z-index: 2;                /* ensures it sits above other cells */
+  position: sticky;
+  left: 0;
+  z-index: 2;                /* ensures it sits above other cells */
+}
+
+.table-fixed-width{
+  min-width: 200px;
+}  
+
+.table-fixed-width-sm{
+  min-width: 150px;
+}
+@media (max-width: 768px) {
+  .table-fixed-width{
+    min-width: 0px;
   }
+  .table-fixed-width-sm{
+    min-width: 0px;
+  }
+}
+
+

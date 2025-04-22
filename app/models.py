@@ -164,9 +164,11 @@ class DriverEventStats(db.Model):
     id:                 so.Mapped[int] = so.mapped_column(primary_key=True)
     driver_event_id:    so.Mapped[int] = so.mapped_column(sa.ForeignKey('driver_event.id'), unique=True, index=True)
 
-    fastest_lap:        so.Mapped[Optional[datetime.timedelta]] = so.mapped_column(sa.Interval)
-    average_lap:        so.Mapped[Optional[datetime.timedelta]] = so.mapped_column(sa.Interval)
+    fastest_lap:        so.Mapped[float] = so.mapped_column(sa.Float)
+    average_lap:        so.Mapped[float] = so.mapped_column(sa.Float)
     total_laps:         so.Mapped[int] = so.mapped_column(sa.Integer, index=True)
+    raw_time:           so.Mapped[float] = so.mapped_column(sa.Float)
+    total_time:         so.Mapped[float] = so.mapped_column(sa.Float)
 
     driver_event:       so.Mapped["DriverEvent"] = so.relationship("DriverEvent", back_populates="driver_event_stats")
 
@@ -185,7 +187,7 @@ class Laptime(db.Model):
     id:                 so.Mapped[int] = so.mapped_column(primary_key=True)
     driver_event_id:    so.Mapped[int] = so.mapped_column(sa.ForeignKey('driver_event.id'))
     
-    laptime:            so.Mapped[datetime.timedelta] = so.mapped_column(sa.Interval)
+    laptime:            so.Mapped[float] = so.mapped_column(sa.Float)
     run_number:         so.Mapped[int] = so.mapped_column(sa.Integer, index=True)
 
     driver_event:       so.Mapped["DriverEvent"] = so.relationship("DriverEvent", back_populates="laptimes")

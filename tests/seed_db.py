@@ -38,7 +38,7 @@ def seed_db():
             for event in events
         ]
 
-        _generate_laptimes(laptime_count=5)
+        _generate_laptimes(laptime_count=8)
 
 
 
@@ -57,7 +57,7 @@ def _generate_laptimes(laptime_count: int):
             add_laptime(
                 db.session,
                 driver_event_id=driver_event + 1,
-                laptime=datetime.timedelta(minutes=random.randint(1, 5), seconds=random.randint(0, 59))
+                laptime=round(random.uniform(60, 120), 2),  # Random laptime between 60 and 120 seconds with 2 decimal places
             )
 
 
